@@ -1,0 +1,17 @@
+{
+  "name": "ctp-tailwindcss-v4",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "sass:watch": "sass --no-source-map --watch --update --style=expanded scss:css",
+    "sass:compile": "sass --no-source-map scss:css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@catppuccin/palette": "^1.7.1",
+    "sass": "^1.85.1"
+  }
+}
