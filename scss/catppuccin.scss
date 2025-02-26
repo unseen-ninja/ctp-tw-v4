@@ -1,0 +1,64 @@
+@use 'sass:color';
+@use 'sass:map';
+@use 'sass:list';
+
+// this import feels scuffed...
+@use "../node_modules/@catppuccin/palette/scss/catppuccin";
+
+
+$config: (
+  variants: (
+    default: '500',
+    // identifiers are sorted with increased instensity of modification
+    tints: (400, 300, 200, 100, 50),
+    shades: (600, 700, 800, 900, 950)
+  ),
+  accents: ('rosewater', 'flamingo', 'pink', 'mauve', 'red', 'maroon', 'peach', 'yellow', 'green', 'teal', 'sky', 'sapphire', 'blue', 'lavender')
+);
+
+
+@function isAccent ($color-name) {
+  $is-accent: false;
+  @each $accent in map.get($config, 'accents') {
+    @if ($color-name == $accent) { $is-accent: true; }
+  }
+  @return $is-accent;
+}
+
+
+:root {
+  // loop through all colors in each flavor
+  @each $ctp-flavor, $ctp-color in catppuccin.$palette {
+    @each $ctp-color-name, $ctp-color-value in $ctp-color {
+
+      // default naming convention for the current color
+      --ctp-#{$ctp-flavor}-#{$ctp-color-name}: #{$ctp-color-value};
+
+      // generate color steps for all accent colors
+      @if (isAccent($ctp-color-name)) {
+
+        @each $variant-type, $variant-identifier in map.get($config, 'variants') {
+          @for $i from 1 through list.length($variant-identifier) {
+
+            $blend-color-light: #FFF;
+            $blend-color-dark: map.get($ctp-color, 'base');
+            // average latte switch™
+            @if ($ctp-flavor == 'latte') {
+              $blend-color-light: map.get($ctp-color, 'base');
+              $blend-color-dark: #000;
+            }
+
+            $blend-color: $ctp-color-value; // this only exists to reduce complexity
+            @if ($variant-type == 'tints') { $blend-color: $blend-color-light; }
+            @if ($variant-type == 'shades') { $blend-color: $blend-color-dark; }
+
+            // put everything together
+            --ctp-#{$ctp-flavor}-#{$ctp-color-name}-#{list.nth($variant-identifier, $i)}: #{color.mix($blend-color, $ctp-color-value, $i * 15%)};
+
+          }
+        }
+
+      }
+    }
+  }
+}
