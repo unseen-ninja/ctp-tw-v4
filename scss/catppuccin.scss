@@ -26,13 +26,15 @@ $config: (
 }
 
 
-:root {
-  // loop through all colors in each flavor
-  @each $ctp-flavor, $ctp-color in catppuccin.$palette {
+// loop through all colors in each flavor
+@each $ctp-flavor, $ctp-color in catppuccin.$palette {
+
+  .#{$ctp-flavor} {
+
     @each $ctp-color-name, $ctp-color-value in $ctp-color {
 
       // default naming convention for the current color
-      --ctp-#{$ctp-flavor}-#{$ctp-color-name}: #{$ctp-color-value};
+      --color-#{$ctp-color-name}: #{$ctp-color-value};
 
       // generate color steps for all accent colors
       @if (isAccent($ctp-color-name)) {
@@ -53,7 +55,7 @@ $config: (
             @if ($variant-type == 'shades') { $blend-color: $blend-color-dark; }
 
             // put everything together
-            --ctp-#{$ctp-flavor}-#{$ctp-color-name}-#{list.nth($variant-identifier, $i)}: #{color.mix($blend-color, $ctp-color-value, $i * 15%)};
+            --color-#{$ctp-color-name}-#{list.nth($variant-identifier, $i)}: #{color.mix($blend-color, $ctp-color-value, $i * 15%)};
 
           }
         }
